@@ -8,11 +8,6 @@ import router from './router'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-// 測試
-import { getData } from '@/apis/testAPI'
-getData().then(res => {
-  console.log(res)
-})
 const app = createApp(App)
 
 app.use(createPinia())

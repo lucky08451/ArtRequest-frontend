@@ -4,7 +4,8 @@ import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <el-button type="primary">Primary</el-button>
+  <!-- <el-button type="primary">Primary</el-button> -->
+  <router-view />
 </template>
 
 <style scoped>

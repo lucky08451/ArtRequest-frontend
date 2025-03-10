@@ -25,4 +25,9 @@ export default [
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
   skipFormatting,
+  {
+    rules: {
+      'vue/multi-word-component-names': ['off'], // 強制使用多單詞組件名稱
+    },
+  },
 ]

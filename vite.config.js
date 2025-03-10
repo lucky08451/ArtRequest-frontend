@@ -10,7 +10,18 @@ import ElementPlus from 'unplugin-element-plus/vite'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    port: 8080
+    // 設定開發服務器端口
+    port: 8080,
+    open: true, // 自動打開瀏覽器
+    cors: true, // 允許跨域
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000/api/',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, '')
+      }
+
+    },
   },
   plugins: [
     vue(),

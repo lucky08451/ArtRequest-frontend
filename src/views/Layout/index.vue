@@ -1,16 +1,8 @@
 <template>
-  <el-container>
-    <el-header>
-      <LayoutNav></LayoutNav>
-      <LayoutHeader></LayoutHeader>
-    </el-header>
-    <el-main>
-      <router-view />
-    </el-main>
-    <el-footer>
-      <LayoutFooter></LayoutFooter>
-    </el-footer>
-  </el-container>
+  <LayoutNav></LayoutNav>
+  <LayoutHeader></LayoutHeader>
+  <router-view />
+  <LayoutFooter></LayoutFooter>
 </template>
 
 <script setup>

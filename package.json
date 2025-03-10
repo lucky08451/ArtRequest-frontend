@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "axios": "^1.8.2",
-    "element-plus": "^2.9.6",
     "pinia": "^3.0.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
@@ -27,7 +26,6 @@
     "prettier": "3.5.3",
     "sass": "^1.85.1",
     "unplugin-auto-import": "^19.1.1",
-    "unplugin-element-plus": "^0.9.1",
     "unplugin-vue-components": "^28.4.1",
     "vite": "^6.2.1",
     "vite-plugin-vue-devtools": "^7.7.2"

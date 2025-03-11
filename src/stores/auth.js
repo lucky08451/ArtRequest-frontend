@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { loginAPI, logoutAPI, checkTokenAPI, registerAPI } from '@/apis/authAPI'
+import { loginAPI, logoutAPI, checkTokenAPI, registerAPI, checkNameAPI } from '@/apis/authAPI'
 export const useUsersStore = defineStore('user', () => {
   const userData = ref([])
   const login = async ({ username, password }) => {
@@ -33,9 +33,17 @@ export const useUsersStore = defineStore('user', () => {
   }
   const register = async (regData) => {
     const res = await registerAPI(regData)
-    return res
+    return res.data
+  }
+  const checkName = async ({ username }) => {
+    const res = await checkNameAPI({ username })
+    return res.data
   }
 
 
-  return { userData, login, logout, checkToken, register }
-})
+  return { userData, login, logout, checkToken, register, checkName }
+},
+  {
+    persist: true,
+  }
+)

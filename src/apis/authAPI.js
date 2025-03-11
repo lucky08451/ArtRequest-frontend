@@ -29,3 +29,12 @@ export function registerAPI(regData) {
     data: regData
   })
 }
+export function checkNameAPI({ username }) {
+  return httpInstance({
+    url: '/auth/checkName/',
+    method: 'post',
+    data: {
+      username
+    }
+  })
+}

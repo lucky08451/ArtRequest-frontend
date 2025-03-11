@@ -24,6 +24,25 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
   // 超出 2xx 范围的状态码都会触发该函数。
   // 对响应错误做点什么
+  if (error.response) {
+    const status = error.response.status;
+    const message = error.response.data.message;
+
+    // 根據狀態碼進行相應的處理
+    switch (status) {
+      case 401:
+        console.log('未授權');
+        break;
+      case 403:
+        console.log('禁止訪問');
+        break;
+      case 404:
+        console.log('請求地址錯誤');
+        break;
+      default:
+        console.log(message);
+    }
+  }
   return Promise.reject(error);
 });
 

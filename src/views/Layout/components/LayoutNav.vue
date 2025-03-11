@@ -23,7 +23,7 @@
             <li class="nav-item">
               <router-link class="nav-link" active-class="active" to="/todos">Todos</router-link>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" v-if="userData.data.role === 'admin'">
               <router-link class="nav-link" active-class="active" to="/users"
                 >使用者名單</router-link
               >

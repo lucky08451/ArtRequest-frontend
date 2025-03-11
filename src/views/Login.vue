@@ -1,10 +1,5 @@
 <template>
   <div class="container">
-    <div class="row">
-      <div class="col">
-        <p id="isLogin"></p>
-      </div>
-    </div>
     <div class="row justify-content-center mt-5">
       <div class="col-6">
         <h1 class="h3 mb-3 fw-normal">登入</h1>
@@ -78,8 +73,8 @@ const passwordError = ref('')
 const validateUsername = () => {
   if (userInfo.value.username === '') {
     usernameError.value = '請輸入帳號'
-  } else if (userInfo.value.username.length < 3 || userInfo.value.username.length > 10) {
-    usernameError.value = '帳號長度需在 3-10 個字元之間'
+  } else if (userInfo.value.username.length < 6 || userInfo.value.username.length > 12) {
+    usernameError.value = '帳號長度需在 6-12 個字元之間'
   } else {
     usernameError.value = ''
   }

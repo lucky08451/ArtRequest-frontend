@@ -25,8 +25,8 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from "vue"
-import axios from "axios"
+import { onMounted, ref } from 'vue'
+import axios from 'axios'
 // const isLogin = ref(false)
 const userList = ref([])
 onMounted(() => {
@@ -35,14 +35,14 @@ onMounted(() => {
 
 const getUserList = async () => {
   await axios
-    .get("/api/v1/user/", {}, { withCredentials: true })
+    .get('/api/v1/user/', {}, { withCredentials: true })
     .then((res) => {
       if (res.data.status === true) {
         userList.value = res.data.data
       } else {
         window.Swal.fire({
           title: res.data.message,
-          icon: "error",
+          icon: 'error',
           draggable: true,
         })
       }
@@ -51,8 +51,8 @@ const getUserList = async () => {
     .catch((error) => {
       console.log(error)
       window.Swal.fire({
-        title: "登入失敗",
-        icon: "error",
+        title: '登入失敗',
+        icon: 'error',
         draggable: true,
       })
     })

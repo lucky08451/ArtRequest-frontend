@@ -63,8 +63,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useUsersStore } from '@/stores/auth'
-import { storeToRefs } from 'pinia'
-const { userData } = storeToRefs(useUsersStore())
+import Swal from 'sweetalert2'
+
 const { login } = useUsersStore()
 
 const userInfo = ref({
@@ -108,8 +108,23 @@ const submitForm = async () => {
   if (!isFormValid.value) {
     return
   }
-  await login({ username: userInfo.value.username, password: userInfo.value.password })
-  console.log(userData.value)
+  const res = await login({ username: userInfo.value.username, password: userInfo.value.password })
+  if (res.status) {
+    Swal.fire({
+      icon: 'success',
+      title: '登入成功',
+      showConfirmButton: false,
+      timer: 1500,
+    }).then(() => {
+      window.location.href = '/'
+    })
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: '登入失敗',
+      text: res.message,
+    })
+  }
 }
 </script>
 

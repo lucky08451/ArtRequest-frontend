@@ -3,6 +3,15 @@
     <div class="row">
       <div class="col-12 py-5">
         <div class="input-group mb-3">
+          <span class="input-group-text">搜尋</span>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="輸入搜尋的關鍵字"
+            v-model="searchItem"
+          />
+        </div>
+        <div class="input-group mb-3">
           <span class="input-group-text">代辦事項</span>
           <input
             type="text"
@@ -48,15 +57,8 @@
           </div>
           <div class="card-body">
             <ul class="list-group">
-              <li
-                class="list-group-item"
-                v-for="(item, key) in filtertodo"
-                :key="item.id"
-              >
-                <div
-                  class="d-flex justify-content-between"
-                  v-if="item.id != cacaheItem.id"
-                >
+              <li class="list-group-item" v-for="(item, key) in filtertodo" :key="item.id">
+                <div class="d-flex justify-content-between" v-if="item.id != cacaheItem.id">
                   <div class="form-check">
                     <input
                       type="checkbox"
@@ -93,14 +95,29 @@
           </div>
           <div class="card-footer d-flex justify-content-between">
             <span
-              >還有<span class="h3 fw-900" style="color: rgb(63, 66, 236)">{{
-                countactive
-              }}</span
+              >還有<span class="h3 fw-900" style="color: rgb(63, 66, 236)">{{ countactive }}</span
               >筆任務未完成</span
             >
-            <a href="#" class="text-decoration-none" @click="destory"
-              >清除所有任務</a
-            >
+            <div>
+              <a class="btn btn-primary btn-sm" href="#" role="button" @click="toggleAll"
+                >全部標記為{{ allCompleted ? '未完成' : '已完成' }}
+              </a>
+              <a href="#" class="text-decoration-none" @click="destory">清除所有任務</a>
+            </div>
+          </div>
+        </div>
+        <div class="h4 mt-3">已完成進度條</div>
+        <div class="progress mt-3">
+          <div
+            class="progress-bar"
+            role="progressbar"
+            aria-label="Basic example"
+            :style="{ width: completedPercentage + '%' }"
+            aria-valuenow="25"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {{ completedPercentage }}%
           </div>
         </div>
       </div>
@@ -108,25 +125,25 @@
   </div>
 </template>
 <script setup>
-import { computed, ref } from "vue"
-const newtodo = ref("")
-const visibility = ref("all") // all, active, completed
-const cacheTitle = ref("")
+import { computed, ref } from 'vue'
+const newtodo = ref('')
+const visibility = ref('all') // all, active, completed
+const cacheTitle = ref('')
 const cacaheItem = ref([])
 const todos = ref([
   {
-    id: "001",
-    title: "購物",
+    id: '001',
+    title: '購物',
     completed: false,
   },
   {
-    id: "002",
-    title: "運動",
+    id: '002',
+    title: '運動',
     completed: false,
   },
   {
-    id: "003",
-    title: "讀書",
+    id: '003',
+    title: '讀書',
     completed: false,
   },
 ])
@@ -141,7 +158,7 @@ const addtodo = () => {
     title: mytitle,
     completed: false,
   })
-  newtodo.value = ""
+  newtodo.value = ''
 }
 const removetodo = (todo) => {
   const newIndex = todos.value.findIndex((item) => {
@@ -156,19 +173,20 @@ const edittodo = (todo) => {
 const donetodo = (item) => {
   item.title = cacheTitle.value
   cacaheItem.value = []
-  cacheTitle.value = ""
+  cacheTitle.value = ''
 }
 const canceltodo = () => {
+  cacheTitle.value = ''
   cacaheItem.value = []
-  cacheTitle.value = ""
 }
 const destory = () => {
   todos.value = []
 }
-const filtertodo = computed(() => {
-  if (visibility.value === "all") {
+
+/* const filtertodo = computed(() => {
+  if (visibility.value === 'all') {
     return todos.value
-  } else if (visibility.value === "active") {
+  } else if (visibility.value === 'active') {
     const activetodo = []
     todos.value.forEach((item) => {
       if (!item.completed) {
@@ -176,7 +194,7 @@ const filtertodo = computed(() => {
       }
     })
     return activetodo
-  } else if (visibility.value === "completed") {
+  } else if (visibility.value === 'completed') {
     const completedtodo = []
     todos.value.forEach((item) => {
       if (item.completed) {
@@ -186,6 +204,23 @@ const filtertodo = computed(() => {
     return completedtodo
   }
   return []
+}) */
+const filtertodo = computed(() => {
+  let filterdata = []
+  if (visibility.value == 'all') {
+    filterdata = todos.value
+  } else if (visibility.value == 'active') {
+    filterdata = todos.value.filter((item) => !item.completed)
+  } else if (visibility.value == 'completed') {
+    filterdata = todos.value.filter((item) => item.completed)
+  }
+  // 處理搜尋功能
+  if (searchItem.value) {
+    filterdata = filterdata.filter((item) =>
+      item.title.toLowerCase().includes(searchItem.value.toLowerCase()),
+    )
+  }
+  return filterdata
 })
 const countactive = computed(() => {
   let active = 0
@@ -195,6 +230,25 @@ const countactive = computed(() => {
     }
   })
   return active
+})
+// 搜尋功能實現
+
+const searchItem = ref('')
+
+const toggleAll = () => {
+  const newState = !allCompleted.value
+  todos.value.forEach((item) => {
+    item.completed = newState
+  })
+}
+
+const allCompleted = computed(() => {
+  return todos.value.every((item) => item.completed)
+})
+const completedPercentage = computed(() => {
+  if (todos.value.length === 0) return 0
+  const completedCount = todos.value.filter((item) => item.completed).length
+  return Math.round((completedCount / todos.value.length) * 100)
 })
 </script>
 

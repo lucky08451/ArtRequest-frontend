@@ -32,7 +32,7 @@
 
           <div class="g-3 ms-auto">
             <span class="me-3" v-if="isLogin">
-              使用者: <span style="color: brown">{{ userData.username }}</span>
+              使用者: <span style="color: brown">{{ userData.data.username }}</span>
             </span>
 
             <a class="btn btn-primary btn-sm" href="#" role="button" @click="logout">登出</a>
@@ -61,7 +61,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useUsersStore } from '@/stores/auth'
+import { storeToRefs } from 'pinia'
+const { checkToken, logout } = useUsersStore()
+const { userData } = storeToRefs(useUsersStore())
 const isLogin = ref(false)
-const userData = ref({})
+onMounted(() => {
+  checkToken()
+})
+// 使用 watch 來監聽 userData 的變化
+watch(
+  userData,
+  (newValue) => {
+    // 在 userData 更新時重新設置 isLogin
+    if (newValue && newValue.status) {
+      isLogin.value = true
+    } else {
+      isLogin.value = false
+    }
+  },
+  { immediate: true },
+) // 設置 immediate 來確保初始狀態能即時更新
 </script>

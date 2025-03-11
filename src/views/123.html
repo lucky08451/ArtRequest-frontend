@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>代辦事項 - todos(重寫更新行為)</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/my.css">
+  <style>
+    .completed {
+      text-decoration: line-through;
+      color: var(--textcolor02);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="app">
+    <div class="row">
+      <div class="col-12 py-5">
+        <div class="input-group mb-3">
+          <span class="input-group-text">搜尋</span>
+          <input type="text" name="" id="" class="form-control" placeholder="輸入搜尋的關鍵字" v-model="searchItem">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text">代辦事項</span>
+          <input type="text" class="form-control" placeholder="輸入代辦事項" v-model="newtodo" @keyup.enter="addtodo">
+          <button class="btn btn-primary" @click="addtodo">新增</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link" href="#" @click="visibility = 'all'"
+                  :class="{ 'active' : visibility == 'all'}">全部</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" @click="visibility = 'active'"
+                  :class="{ 'active' : visibility == 'active'}">進行中</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" @click="visibility = 'completed'"
+                  :class="{ 'active' : visibility == 'completed'}">已完成</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              <li class="list-group-item" v-for="(item, key) in filtertodo">
+                <div class="d-flex justify-content-between" v-if="item.id != cacaheItem.id">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" :id="key" v-model="item.completed">
+                    <label class="form-check-label" :class="{ 'completed' : item.completed }" for=""
+                      @dblclick="edittodo(item)">
+                      {{ item.title }}
+                    </label>
+                  </div>
+                  <button type="button" class="btn-close" aria-label="Close" @click="removetodo(item)"></button>
+                </div>
+                <input type="text" class="form-control" v-if="item.id == cacaheItem.id" v-model="cacheTitle"
+                  @keyup.enter="donetodo(item)" @keyup.esc="canceltodo">
+              </li>
+            </ul>
+          </div>
+          <div class="card-footer d-flex justify-content-between">
+            <span>還有 <span class="h3 fw-900 text-005">{{ countactive }}</span> 筆任務未完成</span>
+            <div>
+              <button class="btn btn-primary me-2" @click="toggleAll">
+                全部標記為{{ allCompleted ? '未完成' : '已完成' }}
+              </button>
+              <a href="#" class="text-decoration-none" @click="destory">清除所有任務</a>
+            </div>
+          </div>
+        </div>
+        <div class="h4 mt-3">已完成進度條:</div>
+        <div class="progress mt-3">
+          <div class="progress-bar" role="progressbar" aria-label="Basic example"
+            :style="{width: completedPercentage + '%'}" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{
+            completedPercentage }}%</div>
+        </div>
+        <div class="h4 mt-3">未成進度條:</div>
+        <div class="progress mt-3">
+          <div class="progress-bar bg-danger" role="progressbar" aria-label="Danger example"
+            :style="{width: 100-completedPercentage + '%'}" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">{{
+            100-completedPercentage }}%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script>
+    const App = {
+      data() {
+        return {
+          newtodo: '',
+          visibility: 'all', //all, active, completed
+          cacheTitle: '',
+          cacaheItem: [],
+          searchItem: '',
+          todos: [
+            {
+              id: '001',
+              title: '購物',
+              completed: false
+            },
+            {
+              id: '002',
+              title: '洗衣服',
+              completed: false
+            },
+            {
+              id: '003',
+              title: '送貨物',
+              completed: false
+            },
+          ]
+        }
+      },
+      methods: {
+        addtodo() {
+          const vm = this;
+          const timestamp = Date.now();
+          const mytitle = vm.newtodo.trim();
+          if (!mytitle) {
+            return
+          }
+          vm.todos.push({
+            id: timestamp,
+            title: mytitle,
+            completed: false
+          });
+
+          vm.newtodo = '';
+          // console.log(timestamp);
+        },
+        removetodo(todo) {
+          const vm = this;
+          var newIndex = vm.todos.findIndex((item, index) => {
+            return todo.id === item.id
+          });
+          vm.todos.splice(newIndex, 1);
+        },
+        destory() {
+          this.todos = [];
+        },
+        edittodo(todo) {
+          this.cacheTitle = todo.title;
+          this.cacaheItem = todo;
+        },
+        donetodo(todo) {
+          todo.title = this.cacheTitle;
+          this.cacheTitle = '';
+          this.cacaheItem = [];
+        },
+        canceltodo() {
+          this.cacheTitle = '';
+          this.cacaheItem = [];
+        },
+        toggleAll() {
+          const newState = !this.allCompleted;
+          this.todos.forEach(item => {
+            item.completed = newState;
+          });
+        }
+      },
+      computed: {
+        // filtertodo() {
+        //     const vm = this;
+        //     if (vm.visibility == 'all') {
+        //         return vm.todos;
+        //     } else if (vm.visibility == 'active') {
+        //         const activetodo = [];
+        //         vm.todos.forEach((item) => {
+        //             if (!item.completed) {
+        //                 activetodo.push(item);
+        //             }
+        //         });
+        //         return activetodo;
+        //     } else if (vm.visibility == 'completed') {
+        //         const completedtodo = [];
+        //         vm.todos.forEach((item) => {
+        //             if (item.completed) {
+        //                 completedtodo.push(item);
+        //             }
+        //         });
+        //         return completedtodo;
+        //     }
+        // },
+        filtertodo() {
+          const vm = this;
+          let filterdata = [];
+          if (vm.visibility == 'all') {
+            filterdata = vm.todos
+          } else if (vm.visibility == 'active') {
+            filterdata = vm.todos.filter(item => !item.completed);
+          } else if (vm.visibility == 'completed') {
+            filterdata = vm.todos.filter(item => item.completed);
+          }
+
+          //處理搜尋功能
+          if (vm.searchItem) {
+            filterdata = filterdata.filter(item => item.title.toLowerCase().includes(vm.searchItem.toLowerCase()));
+          }
+
+          return filterdata;
+        },
+        countactive() {
+          let active = 0;
+          const vm = this;
+          vm.todos.forEach((item) => {
+            if (!item.completed) {
+              active++;
+            }
+          });
+          return active;
+        },
+        allCompleted() {
+          return this.todos.every(item => item.completed);
+        },
+        completedPercentage() {
+          if (this.todos.length == 0) {
+            return 0;
+          }
+          const completedCount = this.todos.filter(item => item.completed).length;
+          return Math.round((completedCount / this.todos.length) * 100);
+        }
+      }
+    }
+    Vue.createApp(App).mount('#app');
+  </script>
+</body>
+
+</html>

@@ -10,3 +10,22 @@ export function loginAPI({ username, password }) {
     }
   })
 }
+export function logoutAPI() {
+  return httpInstance({
+    url: '/auth/logout/',
+    method: 'get'
+  })
+}
+export function checkTokenAPI() {
+  return httpInstance({
+    url: '/auth/me/',
+    method: 'get'
+  })
+}
+export function registerAPI(regData) {
+  return httpInstance({
+    url: '/auth/register/',
+    method: 'post',
+    data: regData
+  })
+}

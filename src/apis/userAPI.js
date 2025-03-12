@@ -1,0 +1,14 @@
+import httpInstance from "@/utils/https";
+
+export function listAPI() {
+  return httpInstance({
+    url: '/v1/user/',
+    method: 'get',
+  })
+}
+export function userIdAPI(id) {
+  return httpInstance({
+    url: `/v1/user/${id}/`,
+    method: 'get',
+  })
+}

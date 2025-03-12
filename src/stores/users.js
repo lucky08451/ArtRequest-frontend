@@ -1,8 +1,19 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { loginAPI, logoutAPI, checkTokenAPI, registerAPI, checkNameAPI } from '@/apis/authAPI'
+import { listAPI } from '@/apis/userAPI'
 export const useUsersStore = defineStore('user', () => {
   const userData = ref([])
+  const userListData = ref([])
+  const getUserList = async () => {
+    const res = await listAPI()
+    if (res.status) {
+      userListData.value = res.data
+      return res
+    } else {
+      return res
+    }
+  }
   const login = async ({ username, password }) => {
     const res = await loginAPI({ username, password })
     if (res.status) {
@@ -41,7 +52,7 @@ export const useUsersStore = defineStore('user', () => {
   }
 
 
-  return { userData, login, logout, checkToken, register, checkName }
+  return { userData, userListData, login, logout, checkToken, register, checkName, getUserList }
 },
   {
     persist: true,

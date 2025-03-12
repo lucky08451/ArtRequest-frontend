@@ -57,7 +57,7 @@
 </template>
 <script setup>
 import { computed, ref } from 'vue'
-import { useUsersStore } from '@/stores/auth'
+import { useUsersStore } from '@/stores/users'
 import Swal from 'sweetalert2'
 
 const { login } = useUsersStore()

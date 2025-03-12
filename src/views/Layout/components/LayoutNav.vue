@@ -24,7 +24,7 @@
               <router-link class="nav-link" active-class="active" to="/todos">Todos</router-link>
             </li>
             <li class="nav-item" v-if="userData.data.role === 'admin'">
-              <router-link class="nav-link" active-class="active" to="/users"
+              <router-link class="nav-link" active-class="active" to="/admin"
                 >使用者名單</router-link
               >
             </li>
@@ -62,7 +62,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import { useUsersStore } from '@/stores/auth'
+import { useUsersStore } from '@/stores/users'
 import { storeToRefs } from 'pinia'
 const { checkToken, logout } = useUsersStore()
 const { userData } = storeToRefs(useUsersStore())

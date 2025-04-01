@@ -15,7 +15,12 @@ export default defineConfig({
         target: 'http://localhost:8000/api/',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '')
-      }
+      },
+      '/img': {
+        target: 'http://localhost:8000/storage/',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/img/, '')
+      },
 
     },
   },

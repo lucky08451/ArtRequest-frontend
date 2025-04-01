@@ -1,6 +1,6 @@
 // axios基礎封裝
 import axios from 'axios'
-
+import { useUsersStore } from '@/stores/users'
 const httpInstance = axios.create({
   baseURL: '/api',
   timeout: 5000,
@@ -8,7 +8,7 @@ const httpInstance = axios.create({
 })
 
 // 請求攔截器
-axios.interceptors.request.use(function (config) {
+httpInstance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
   return config;
 }, function (error) {
@@ -17,7 +17,7 @@ axios.interceptors.request.use(function (config) {
 });
 
 // 添加响应拦截器
-axios.interceptors.response.use(function (response) {
+httpInstance.interceptors.response.use(function (response) {
   // 2xx 范围内的状态码都会触发该函数。
   // 对响应数据做点什么
   return response;
@@ -27,11 +27,13 @@ axios.interceptors.response.use(function (response) {
   if (error.response) {
     const status = error.response.status;
     const message = error.response.data.message;
-
+    console.log(`狀態碼 ${status}: ${message}`);
     // 根據狀態碼進行相應的處理
     switch (status) {
       case 401:
         console.log('未授權');
+        const usersStore = useUsersStore()
+        usersStore.logout();
         break;
       case 403:
         console.log('禁止訪問');
@@ -42,6 +44,7 @@ axios.interceptors.response.use(function (response) {
       default:
         console.log(message);
     }
+    return Promise.resolve(error.response.data);
   }
   return Promise.reject(error);
 });

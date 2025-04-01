@@ -1,10 +1,6 @@
 <script setup>
 import { useCounterStore } from '@/stores/counter'
-import { onMounted } from 'vue'
 const counterStore = useCounterStore()
-onMounted(() => {
-  counterStore.getList()
-})
 </script>
 
 <template>

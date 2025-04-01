@@ -21,21 +21,53 @@
               <router-link class="nav-link" active-class="active" to="/">Home</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" active-class="active" to="/todos">Todos</router-link>
-            </li>
-            <li class="nav-item" v-if="userData.data.role === 'admin'">
-              <router-link class="nav-link" active-class="active" to="/admin"
-                >使用者名單</router-link
+              <router-link class="nav-link" active-class="active" to="/commissions"
+                >繪圖委託列表</router-link
               >
             </li>
           </ul>
 
-          <div class="g-3 ms-auto">
+          <div class="g-3 ms-auto d-flex">
             <span class="me-3" v-if="isLogin">
-              使用者: <span style="color: brown">{{ userData.data.username }}</span>
+              使用者: <span style="color: brown">{{ userData.data.username }}</span> 角色:
+              <span style="color: brown">{{ getRole }}</span>
             </span>
-
-            <a class="btn btn-primary btn-sm" href="#" role="button" @click="logout">登出</a>
+            <!-- 下拉選單 -->
+            <div class="dropdown">
+              <button
+                class="btn btn-primary btn-sm dropdown-toggle"
+                type="button"
+                id="userMenu"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                會員功能
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                <li>
+                  <router-link class="dropdown-item" to="/my-profile">個人資料</router-link>
+                </li>
+                <li v-if="userData.data.role === 'artist' || userData.data.role === 'client'">
+                  <router-link class="dropdown-item" to="/my-order">我的訂單</router-link>
+                </li>
+                <li v-if="userData.data.role === 'artist'">
+                  <router-link class="dropdown-item" to="/mycommission">我的委託</router-link>
+                </li>
+                <li v-if="userData.data.role === 'admin'">
+                  <router-link class="dropdown-item" to="/admin">使用者名單</router-link>
+                </li>
+                <li v-if="userData.data.role === 'admin'">
+                  <router-link class="dropdown-item" to="/admin/layer">表單設定</router-link>
+                </li>
+                <li v-if="userData.data.role === 'admin'">
+                  <router-link class="dropdown-item" to="/admin/AdminPanel">後臺數據</router-link>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="#" @click.prevent="logout">登出</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </template>
         <!-- 沒登入的導覽列 -->
@@ -45,7 +77,9 @@
               <router-link class="nav-link" active-class="active" to="/">Home</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" active-class="active" to="/todos">Todos</router-link>
+              <router-link class="nav-link" active-class="active" to="/commissions"
+                >繪圖委託列表</router-link
+              >
             </li>
           </ul>
 
@@ -61,14 +95,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useUsersStore } from '@/stores/users'
 import { storeToRefs } from 'pinia'
-const { checkToken, logout } = useUsersStore()
-const { userData } = storeToRefs(useUsersStore())
-const isLogin = ref(false)
+const { logout } = useUsersStore()
+const { userData, isLogin, getRole } = storeToRefs(useUsersStore())
+console.log(getRole.value)
 onMounted(() => {
-  checkToken()
+  console.log('進入NAV')
 })
 // 使用 watch 來監聽 userData 的變化
 watch(
@@ -81,6 +115,6 @@ watch(
       isLogin.value = false
     }
   },
-  { immediate: true },
+  { immediate: true }
 ) // 設置 immediate 來確保初始狀態能即時更新
 </script>

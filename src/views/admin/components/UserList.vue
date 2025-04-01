@@ -11,13 +11,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in userListData.data" :key="item.id">
+        <tr v-for="item in userListData" :key="item.id">
           <th scope="row">{{ item.id }}</th>
           <td>{{ item.username }}</td>
           <td>{{ item.email }}</td>
           <td>{{ item.role }}</td>
           <td>
-            <router-link class="btn btn-primary btn-sm" :to="`/admin/edit/${item.id}`">
+            <router-link
+              class="btn btn-primary btn-sm"
+              :to="{
+                name: 'adminUserEdit',
+                params: { id: item.id },
+              }"
+            >
               修改
             </router-link>
           </td>
@@ -28,12 +34,15 @@
 </template>
 <script setup>
 import { onMounted } from 'vue'
-import { useUsersStore } from '@/stores/users'
 import { storeToRefs } from 'pinia'
+import { useUsersStore } from '@/stores/users'
 const { getUserList } = useUsersStore()
 const { userListData } = storeToRefs(useUsersStore())
 onMounted(() => {
   getUserList()
+
+  console.log('進入使用者名單')
+  console.log(userListData)
 })
 console.log(userListData)
 </script>

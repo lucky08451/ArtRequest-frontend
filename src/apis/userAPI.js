@@ -6,9 +6,16 @@ export function listAPI() {
     method: 'get',
   })
 }
-export function userIdAPI(id) {
+export function getUserIdAPI(id) {
   return httpInstance({
     url: `/v1/user/${id}/`,
     method: 'get',
+  })
+}
+export function updateAPI(id, data) {
+  return httpInstance({
+    url: `/v1/user/${id}/`,
+    method: 'post',
+    data: data,
   })
 }

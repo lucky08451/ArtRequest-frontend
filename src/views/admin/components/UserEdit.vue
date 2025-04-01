@@ -1,13 +1,13 @@
 <template>
   <div class="container mt-4">
     <h2>編輯用戶</h2>
-    <div v-if="isLoading">載入中...</div>
+    <div v-if="!userData">載入中...</div>
     <div v-else>
-      <div v-if="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
       <form @submit.prevent="updateUser">
+        <input type="hidden" name="id" v-model="userData.id" />
         <div class="mb-3">
           <label class="form-label">帳號</label>
-          <input type="text" class="form-control" v-model="userData.username" required />
+          <input type="text" class="form-control" v-model="userData.username" disabled />
         </div>
         <div class="mb-3">
           <label class="form-label">Email</label>
@@ -26,8 +26,26 @@
           </select>
         </div>
         <div class="mb-3">
+          <label class="form-label">
+            預覽頭像
+            <img
+              :src="`/img/avatars/${userData.avatar}`"
+              style="height: 100px"
+              class="ms-2"
+              id="avatarPreview"
+            />
+          </label>
+        </div>
+        <div class="mb-3">
           <label for="formFile" class="form-label">頭像</label>
-          <input class="form-control" type="file" id="avatar" @change="uploadFile" name="avatar" />
+          <input
+            class="form-control"
+            type="file"
+            ref="avatarInput"
+            id="avatar"
+            @change="checkFile"
+            name="avatar"
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">個人簡介</label>
@@ -40,33 +58,40 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { userIdAPI } from '@/apis/userAPI'
+// import { ref, onMounted } from 'vue'
 import Swal from 'sweetalert2'
-const route = useRoute()
-const router = useRouter()
-const userData = ref({ username: '', email: '', password: '', role: '', bio: '', avatar: '' })
-const isLoading = ref(true)
-const errorMsg = ref('')
-const fetchUserData = async () => {
-  const userId = route.params.id
-  const res = await userIdAPI(userId)
-  if (res.data.status) {
-    userData.value = res.data.data
-    isLoading.value = false
-  } else {
-    errorMsg.value = res.data.message
-  }
-  console.log(res)
-}
-onMounted(() => {
-  fetchUserData()
+import { storeToRefs } from 'pinia'
+
+import { useUsersStore } from '@/stores/users'
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+defineProps({
+  id: {
+    type: String,
+    required: true,
+  },
 })
-const uploadFile = () => {
-  const file = avatar.files[0]
+
+const route = useRoute()
+const { userListData } = storeToRefs(useUsersStore())
+const { update } = useUsersStore()
+console.log(userListData.value)
+console.log(route.params.id)
+
+const userData = ref(null)
+const avatarInput = ref(null)
+userListData.value.forEach((item) => {
+  if (item.id == route.params.id) {
+    userData.value = item
+  }
+})
+const checkFile = async () => {
+  const file = avatarInput.value.files[0]
   const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
   console.log(URL.createObjectURL(file))
+  console.log(file)
+
   if (!allowedTypes.includes(file.type)) {
     Swal.fire({
       title: `檔案格式錯誤`,
@@ -80,11 +105,48 @@ const uploadFile = () => {
     html: `<img src="${URL.createObjectURL(file)}" style="height: 100px" />`,
     icon: 'success',
     confirmButtonText: '確認',
-  }).then(() => {})
+  })
+  // userData.value.avatar = file
   // const form = new FormData()
   // form.append('file', file)
   // form.append('id', userData.value.id)
   // console.log(form)
+  // 將檔案存到 userData 用於預覽，但後端仍需從 FormData 獲取
+  // 設定img 的 src 屬性為 URL.createObjectURL(file)，用於前端顯示
+  document.getElementById('avatarPreview').src = URL.createObjectURL(file)
+}
+const updateUser = async () => {
+  const file = avatarInput.value.files[0] // 正確引用 avatarInput
+
+  const form = new FormData()
+  if (file) {
+    form.append('avatar', file) // 上傳檔案
+  }
+  form.append('id', userData.value.id) // 上傳檔案
+  form.append('email', userData.value.email)
+  form.append('password', userData.value.password)
+  form.append('role', userData.value.role)
+  form.append('bio', userData.value.bio || '') // 避免 bio 為空
+
+  try {
+    const res = await update(route.params.id, form)
+    console.log('回應:', res)
+    Swal.fire({
+      title: '更新成功',
+      icon: 'success',
+      confirmButtonText: '確認',
+    }).then(() => {
+      route.to('../')
+    })
+  } catch (error) {
+    console.error('錯誤:', error.response?.data || error.message)
+    Swal.fire({
+      title: '更新失敗',
+      text: error.response?.data?.message || '未知錯誤',
+      icon: 'error',
+      confirmButtonText: '確認',
+    })
+  }
 }
 </script>
 

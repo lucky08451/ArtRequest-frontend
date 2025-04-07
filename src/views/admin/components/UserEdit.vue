@@ -29,7 +29,7 @@
           <label class="form-label">
             預覽頭像
             <img
-              :src="`/img/avatars/${userData.avatar}`"
+              :src="`${$imgURL}/avatars/${userData.avatar}`"
               style="height: 100px"
               class="ms-2"
               id="avatarPreview"
@@ -65,7 +65,7 @@ import { storeToRefs } from 'pinia'
 import { useUsersStore } from '@/stores/users'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-
+// const imgURL = import.meta.env.VITE_IMAGE_URL
 defineProps({
   id: {
     type: String,

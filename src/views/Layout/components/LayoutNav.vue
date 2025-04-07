@@ -54,7 +54,7 @@
                   <router-link class="dropdown-item" to="/mycommission">我的委託</router-link>
                 </li>
                 <li v-if="userData.data.role === 'admin'">
-                  <router-link class="dropdown-item" to="/admin">使用者名單</router-link>
+                  <router-link class="dropdown-item" to="/admin/user">使用者名單</router-link>
                 </li>
                 <li v-if="userData.data.role === 'admin'">
                   <router-link class="dropdown-item" to="/admin/layer">表單設定</router-link>
@@ -115,6 +115,6 @@ watch(
       isLogin.value = false
     }
   },
-  { immediate: true }
+  { immediate: true },
 ) // 設置 immediate 來確保初始狀態能即時更新
 </script>

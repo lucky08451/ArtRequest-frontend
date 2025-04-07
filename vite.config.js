@@ -5,8 +5,10 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default defineConfig({
-  server: {
+  base: '/ArtRequest_html/',
+  /* server: {
     // 設定開發服務器端口
+    host: '0.0.0.0',
     port: 8080,
     open: true, // 自動打開瀏覽器
     cors: true, // 允許跨域
@@ -23,7 +25,7 @@ export default defineConfig({
       },
 
     },
-  },
+  }, */
   plugins: [
     vue(),
     vueDevTools(),

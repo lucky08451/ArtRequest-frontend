@@ -13,7 +13,11 @@
         />
         <div v-if="form?.photo" class="mb-3">
           <label>現有圖片</label>
-          <img :src="`/img/commissions/${form.photo}`" alt="現有圖片" style="max-width: 200px" />
+          <img
+            :src="`${imgURL}/commissions/${form.photo}`"
+            alt="現有圖片"
+            style="max-width: 200px"
+          />
         </div>
         <CommissionFormField
           label="描述"
@@ -102,6 +106,7 @@ import { useCommissionsStore } from '@/stores/commissions'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useUsersStore } from '@/stores/users'
+const imgURL = import.meta.env.VITE_IMAGE_URL
 
 const usersStore = useUsersStore()
 const { userData } = storeToRefs(usersStore)

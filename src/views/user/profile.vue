@@ -26,7 +26,7 @@
         <label class="form-label">
           預覽頭像
           <img
-            :src="`/img/avatars/${userData.avatar}`"
+            :src="`${imgURL}/avatars/${userData.avatar}`"
             style="height: 100px"
             class="ms-2"
             id="avatarPreview"
@@ -58,6 +58,8 @@ import { useUsersStore } from '@/stores/users'
 import Swal from 'sweetalert2'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router' // 引入 useRouter
+const imgURL = import.meta.env.VITE_IMAGE_URL
+
 const { getUserData, update } = useUsersStore()
 const router = useRouter()
 const userData = ref(null)

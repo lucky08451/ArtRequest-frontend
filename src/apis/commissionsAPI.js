@@ -1,7 +1,7 @@
 import httpInstance from "@/utils/https";
 export function commissionsListAPI(params) {
   return httpInstance({
-    url: '/v1/commissions/',
+    url: '/v1/commissions',
     method: 'get',
     params: params
   })
@@ -22,7 +22,7 @@ export function getArtistCommissionsAPI(artistId) {
 // 新增委託
 export function addCommissionsAPI(data) {
   return httpInstance({
-    url: '/v1/commissions/artist/',
+    url: '/v1/commissions/artist',
     method: 'post',
     data: data,
     headers: {

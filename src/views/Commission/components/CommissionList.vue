@@ -30,7 +30,7 @@
       <div v-for="commission in commissions" :key="commission.id" class="col-md-6 col-lg-4 mb-4">
         <div class="card h-100" @click="goToCommission(commission.id)">
           <img
-            :src="`/img/commissions/${commission.photo}`"
+            :src="`${imgURL}/commissions/${commission.photo}`"
             class="card-img-top"
             alt="委託圖片"
             style="object-fit: cover; height: 200px"
@@ -88,6 +88,7 @@ defineProps({
     default: 'open',
   },
 })
+const imgURL = import.meta.env.VITE_IMAGE_URL
 
 // 狀態管理
 const router = useRouter()

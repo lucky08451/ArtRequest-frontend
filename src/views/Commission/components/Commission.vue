@@ -22,7 +22,7 @@
           <div class="row justify-content-center">
             <div class="col-auto">
               <img
-                :src="`/img/commissions/${commissionsData.photo}`"
+                :src="`${imgURL}/commissions/${commissionsData.photo}`"
                 class="img-fluid rounded-start rounded rounded-3"
                 :alt="commissionsData.title"
                 style="object-fit: cover; height: 100%"
@@ -104,6 +104,7 @@ const router = useRouter()
 const commissionsData = ref(null) // 修改為 ref 對象
 const loading = ref(true)
 const error = ref(null)
+const imgURL = import.meta.env.VITE_IMAGE_URL
 
 // 格式化日期
 const formatDate = (dateString) => {

@@ -75,6 +75,7 @@ const form = ref({
 const loading = ref(false)
 const error = ref(null)
 const existingPhoto = ref('') // 儲存現有圖片 URL
+const imgURL = import.meta.env.VITE_IMAGE_URL
 
 // 獲取委託資料
 const fetchCommission = async () => {
@@ -98,7 +99,7 @@ const fetchCommission = async () => {
         revisionPolicy: commission.revision_policy || '',
         paymentStages: commission.payment_stages || '',
       }
-      existingPhoto.value = commission.photo ? `/img/${commission.photo}` : '' // 假設圖片路徑
+      existingPhoto.value = commission.photo ? `${imgURL}/${commission.photo}` : '' // 假設圖片路徑
     } else {
       throw new Error('無法獲取委託資料')
     }

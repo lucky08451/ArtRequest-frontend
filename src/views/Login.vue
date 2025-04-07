@@ -46,7 +46,9 @@
             </button>
           </div>
           <div class="col-6">
-            <a class="btn btn-success w-100 py-2" href="/register"> 註冊 </a>
+            <router-link class="btn btn-success w-100 py-2" active-class="active" to="/register"
+              >註冊</router-link
+            >
           </div>
         </div>
 
@@ -59,7 +61,8 @@
 import { computed, ref } from 'vue'
 import { useUsersStore } from '@/stores/users'
 import Swal from 'sweetalert2'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const { login } = useUsersStore()
 
 const userInfo = ref({
@@ -111,7 +114,7 @@ const submitForm = async () => {
       showConfirmButton: false,
       timer: 1500,
     }).then(() => {
-      window.location.href = '/'
+      router.push('/')
     })
   } else {
     Swal.fire({

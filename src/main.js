@@ -21,12 +21,13 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js'
-
+const imgURL = import.meta.env.VITE_IMAGE_URL;
 // 註冊 chart.js 模組
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
 
 const app = createApp(App)
 const pinia = createPinia()
+app.config.globalProperties.$imgURL = imgURL;
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 app.use(router)

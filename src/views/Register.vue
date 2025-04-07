@@ -105,6 +105,8 @@
 import { computed, ref } from 'vue'
 import { useUsersStore } from '@/stores/users'
 import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // const isLogin = ref(false)
 const { register, checkName } = useUsersStore()
 const formData = ref({
@@ -138,7 +140,7 @@ const validateUsername = async () => {
     formData.value.username.length > 12 ||
     !usernamePattern.test(formData.value.username)
   ) {
-    formError.value.username = '帳號只能包含英文字母、數字、._-，且超過 6 個字'
+    formError.value.username = '帳號只能包含英文字母、數字、._-，需在 6-12 個字元之間'
   } else {
     formError.value.username = ''
   }
@@ -147,7 +149,7 @@ const validatePassword = () => {
   if (formData.value.password === '') {
     formError.value.password = '請輸入密碼'
   } else if (formData.value.password.length < 6 || formData.value.password.length > 12) {
-    formError.value.password = '密碼長度需在 3-10 個字元之間'
+    formError.value.password = '密碼長度需在 6-12 個字元之間'
   } else {
     formError.value.password = ''
   }
@@ -246,7 +248,7 @@ const submitForm = async () => {
       icon: 'success',
       draggable: true,
     }).then(() => {
-      window.location.href = '/login'
+      router.push('/login')
     })
   } else {
     Swal.fire({

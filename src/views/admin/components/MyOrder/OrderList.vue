@@ -63,7 +63,7 @@
 
           <template v-if="detail.type === 'photo'">
             <img
-              :src="'/img/orderFrom/' + detail.value"
+              :src="`${imgURL}/orderFrom/${detail.value}`"
               alt="圖片"
               class="lightbox-thumbnail"
               @click="openLightbox(detail.value)"
@@ -88,12 +88,13 @@ import { onMounted, ref } from 'vue'
 import { OrderListAPI, updateOrderAPI } from '@/apis/orderAPI'
 import Swal from 'sweetalert2'
 import VueEasyLightbox from 'vue-easy-lightbox'
+const imgURL = import.meta.env.VITE_IMAGE_URL
 
 const lightboxVisible = ref(false)
 const lightboxImage = ref('')
 
 const openLightbox = (imageUrl) => {
-  lightboxImage.value = '/img/orderFrom/' + imageUrl
+  lightboxImage.value = imgURL + '/orderFrom/' + imageUrl
   lightboxVisible.value = true
 }
 // 狀態列表

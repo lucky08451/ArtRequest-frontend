@@ -24,6 +24,21 @@ npm install
 npm run dev
 ```
 
-## 聯絡方式
+### 後端
 
-如有問題請聯絡作者：qfkuch08451@gmail.com
+```bash
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
+
+## 🙋‍♀️ 聯絡方式
+
+有任何問題歡迎聯絡我：
+
+GitHub: @lucky08451
+
+Email: qfkuch08451@gmail.com

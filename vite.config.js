@@ -6,26 +6,13 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default defineConfig({
   base: '/ArtRequest_html/',
-  /* server: {
-    // 設定開發服務器端口
-    host: '0.0.0.0',
-    port: 8080,
-    open: true, // 自動打開瀏覽器
-    cors: true, // 允許跨域
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8000/api/',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, '')
-      },
-      '/img': {
-        target: 'http://localhost:8000/storage/',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/img/, '')
-      },
-
-    },
-  }, */
+  // server: {
+  //   // 設定開發服務器端口
+  //   host: '0.0.0.0',
+  //   port: 5173,
+  //   open: true, // 自動打開瀏覽器
+  //   cors: true, // 允許跨域
+  // },
   plugins: [
     vue(),
     vueDevTools(),

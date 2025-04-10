@@ -50,6 +50,9 @@
                 <li v-if="userData.data.role === 'artist' || userData.data.role === 'client'">
                   <router-link class="dropdown-item" to="/my-order">我的訂單</router-link>
                 </li>
+                <li v-if="userData.data.role === 'admin'">
+                  <router-link class="dropdown-item" to="/admin/orders">訂單管理</router-link>
+                </li>
                 <li v-if="userData.data.role === 'artist'">
                   <router-link class="dropdown-item" to="/mycommission">我的委託</router-link>
                 </li>
@@ -98,23 +101,21 @@
 import { onMounted, watch } from 'vue'
 import { useUsersStore } from '@/stores/users'
 import { storeToRefs } from 'pinia'
-const { logout } = useUsersStore()
+
+const { logout, checkToken } = useUsersStore()
 const { userData, isLogin, getRole } = storeToRefs(useUsersStore())
 console.log(getRole.value)
-onMounted(() => {
+onMounted(async () => {
   console.log('進入NAV')
+  await checkToken() // 強制更新登入狀態
 })
-// 使用 watch 來監聽 userData 的變化
+
+// 監聽 userData 是否變化
 watch(
-  userData,
-  (newValue) => {
-    // 在 userData 更新時重新設置 isLogin
-    if (newValue && newValue.status) {
-      isLogin.value = true
-    } else {
-      isLogin.value = false
-    }
+  () => isLogin.value,
+  (newUser) => {
+    // 當 user 狀態改變時執行的操作
+    console.log('登入狀態:', newUser)
   },
-  { immediate: true },
-) // 設置 immediate 來確保初始狀態能即時更新
+)
 </script>

@@ -70,6 +70,16 @@
               :required="item.required === 'Y'"
             />
           </div>
+          <!-- text input -->
+          <div v-if="item.type === 'text'">
+            <input
+              class="form-control"
+              type="text"
+              :name="'layer' + item.layer1Id"
+              v-model="item.value"
+              :required="item.required === 'Y'"
+            />
+          </div>
         </div>
       </div>
       <div class="row justify-content-center">
@@ -87,10 +97,10 @@ import { useLayerStore } from '@/stores/layer'
 import { storeToRefs } from 'pinia'
 import { addOrderAPI } from '@/apis/orderAPI'
 import Swal from 'sweetalert2'
-import { useUsersStore } from '@/stores/users'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 // 獲取 委託ID
 const commissionId = route.params.id
 const { getLayer } = useLayerStore()
@@ -172,6 +182,24 @@ const submitForm = async () => {
     formDataToSubmit.append('commissionId', commissionId)
     const res = await addOrderAPI(formDataToSubmit)
     console.log(res)
+    if (res.status) {
+      Swal.fire({
+        icon: 'success',
+        title: '表單提交成功',
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => {
+        router.push({
+          name: 'my-order',
+        })
+      })
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: '表單提交失敗',
+        text: res.message,
+      })
+    }
     /* addOrderAPI(formData.value)
       .then((response) => {
         console.log('表單提交成功:', response)
@@ -190,4 +218,3 @@ const submitForm = async () => {
   max-width: 800px;
 }
 </style>
-

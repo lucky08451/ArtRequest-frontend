@@ -4,7 +4,6 @@ import Home from '@/views/Home/index.vue'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import Admin from '@/views/admin/index.vue'
-import UserList from '@/views/admin/components/UserList.vue'
 import UserEdit from '@/views/admin/components/UserEdit.vue'
 import Commissions from '@/views/Commission/index.vue'
 import MyCommission from '@/views/MyCommission/index.vue'
@@ -196,9 +195,12 @@ router.beforeEach((to, from, next) => {
 
   // 如果是公開頁面，直接放行
   if (to.meta.public) {
+    if ((to.name === 'login' || to.name === 'register') && userStore.isLogin) {
+      // 重定向到首頁或其他頁面
+      next({ name: 'home' });
+    }
     return next()
   }
-
   // 檢查是否需要登入
   if (to.meta.requiresAuth) {
     if (!userStore.isLogin) {

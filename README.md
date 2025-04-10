@@ -1,35 +1,29 @@
-# ArtRequest
+# 專案名稱:ArtRequest
 
-This template should help get you started developing with Vue 3 in Vite.
+ArtRequest 是一個提供繪師與客戶之間進行繪圖委託的平台，支援會員系統、委託單建立等功能。
 
-## Recommended IDE Setup
+## 功能特色
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- ✅ 使用者註冊 / 登入 / 驗證（JWT + Cookie）
+- 🎨 建立、瀏覽繪師作品集
+- 📦 委託流程管理（建立、接受、付款、完成）
 
-## Customize configuration
+## 技術棧
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- 前端：Vue 3 + Pinia + Bootstrap 5
+- 後端：Laravel + JWT 驗證（php-open-source-saver/jwt-auth）
+- 資料庫：MySQL
 
-## Project Setup
+## 開發環境建置
 
-```sh
+### 前端
+
+```bash
+cd frontend
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+## 聯絡方式
 
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+如有問題請聯絡作者：qfkuch08451@gmail.com

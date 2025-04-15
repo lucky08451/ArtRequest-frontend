@@ -13,11 +13,23 @@
         />
       </div>
       <div class="mb-3">
+        <label for="directions" class="form-label">說明</label>
+        <input
+          v-model="layer1Form.directions"
+          type="text"
+          class="form-control"
+          id="directions"
+          placeholder="請輸入說明(可以不填)"
+          required
+        />
+      </div>
+      <div class="mb-3">
         <div class="mb-3">
           <label for="types" class="form-label">類型</label>
           <select v-model="layer1Form.type" class="form-select" id="type" required>
             <option value="0" disabled>請選擇類型</option>
             <option value="text">文字 (T)</option>
+            <option value="number">數字 (N)</option>
             <option value="radio">單選 (R)</option>
             <option value="checkbox">複選 (C)</option>
             <option value="textarea">多行文字 (X)</option>
@@ -70,6 +82,7 @@ const layer1Form = ref({
   type: '0',
   active: true,
   required: true,
+  directions: null,
 })
 const submitForm = async () => {
   if (layer1Form.value.type == '0') {
@@ -83,6 +96,7 @@ const submitForm = async () => {
   // 將 active 轉換為 'Y' 或 'N'
   layer1Form.value.active = layer1Form.value.active ? 'Y' : 'N'
   layer1Form.value.required = layer1Form.value.required ? 'Y' : 'N'
+  layer1Form.value.directions = layer1Form.value.directions || null
   const res = await addLayer1(layer1Form.value)
   if (res.status) {
     Swal.fire({

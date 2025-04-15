@@ -13,11 +13,23 @@
         />
       </div>
       <div class="mb-3">
+        <label for="directions" class="form-label">說明</label>
+        <input
+          v-model="layer1Form.directions"
+          type="text"
+          class="form-control"
+          id="directions"
+          placeholder="請輸入說明(可以不填)"
+          required
+        />
+      </div>
+      <div class="mb-3">
         <div class="mb-3">
           <label for="types" class="form-label">類型</label>
           <select v-model="layer1Form.type" class="form-select" id="type" disabled>
             <option value="0" disabled>請選擇類型</option>
             <option value="text">文字 (T)</option>
+            <option value="number">數字 (T)</option>
             <option value="radio">單選 (R)</option>
             <option value="checkbox">複選 (C)</option>
             <option value="textarea">多行文字 (X)</option>
@@ -88,13 +100,15 @@ onMounted(async () => {
     await getLayer1Data()
   }
   const foundItem = Layer1List.value.find((item) => item.layer1Id == layer1Id)
+  console.log(foundItem)
+
   if (foundItem) {
     layer1Form.value = { ...foundItem }
     console.log('123')
     console.log(layer1Form.value)
     // 將 active 轉換為布林值;
-    layer1Form.value.active = layer1Form.value.active = 'Y' ? true : false
-    layer1Form.value.required = layer1Form.value.required = 'Y' ? true : false
+    layer1Form.value.active = layer1Form.value.active === 'Y' ? true : false
+    layer1Form.value.required = layer1Form.value.required === 'Y' ? true : false
     console.log(layer1Form.value)
   } else {
     console.error('未找到對應的 layer1Id:', layer1Id)
@@ -103,10 +117,15 @@ onMounted(async () => {
 })
 console.log(layer1Id)
 const submitForm = async () => {
-  console.log(layer1Form.value)
+  // console.log(layer1Form.value)
   // 將 active 轉換為 'Y' 或 'N'
   layer1Form.value.active = layer1Form.value.active ? 'Y' : 'N'
   layer1Form.value.required = layer1Form.value.required ? 'Y' : 'N'
+  // console.log(layer1Form.value.directions)
+
+  layer1Form.value.directions = layer1Form.value.directions || null
+  // console.log(layer1Form.value.directions)
+
   const res = await updateLayer1ById(layer1Id, layer1Form.value)
   if (res.status) {
     Swal.fire({
@@ -115,7 +134,6 @@ const submitForm = async () => {
       showConfirmButton: false,
     }).then(() => {
       // console.log(res)
-
       router.push('/admin/layer/layer1List')
     })
   }

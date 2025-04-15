@@ -5,6 +5,8 @@
       <div v-for="item in formData" class="mb-3 row" :key="item.layer1Id">
         <div class="col-3">
           <label class="form-label">{{ item.name }}</label>
+          <!-- 必填圖示 -->
+          <span v-if="item.required === 'Y'" class="text-danger">*</span>
         </div>
         <div class="col">
           <!-- Radio buttons -->
@@ -42,7 +44,6 @@
                   :name="'layer' + item.layer1Id"
                   :value="layer2.layer2Name"
                   v-model="item.value"
-                  :required="item.required === 'Y'"
                 />
                 <label class="form-check-label">{{ layer2.layer2Name }}</label>
               </div>
@@ -79,6 +80,30 @@
               v-model="item.value"
               :required="item.required === 'Y'"
             />
+          </div>
+          <!-- number input -->
+          <div v-if="item.type === 'number'">
+            <input
+              class="form-control"
+              type="number"
+              :name="'layer' + item.layer1Id"
+              v-model="item.value"
+              :required="item.required === 'Y'"
+              min="0"
+              step="500"
+              @change="
+                (e) => {
+                  if (e.target.value == 0) {
+                    e.target.value = 0
+                  } else if (e.target.value > 0) {
+                    e.target.value = Math.ceil(e.target.value / 500) * 500
+                  }
+                }
+              "
+            />
+            <small class="form-text text-muted">
+              {{ item.directions }}
+            </small>
           </div>
         </div>
       </div>
@@ -135,6 +160,7 @@ onMounted(async () => {
       type: layer.type,
       required: layer.required,
       value: value,
+      directions: layer.directions,
     })
   })
   console.log(formData.value)
@@ -152,7 +178,11 @@ const submitForm = async () => {
   // 檢查表單項目是否有效
   // 手動驗證表單項目
   formData.value.forEach((item) => {
-    if (
+    // 對於 checkbox，檢查是否至少選擇了一個選項
+    if (item.type === 'checkbox' && (!Array.isArray(item.value) || item.value.length === 0)) {
+      isValid = false
+      errorMessage += `${item.name} (至少選擇一項) | `
+    } else if (
       (item.required === 'Y' && !item.value) ||
       (Array.isArray(item.value) && item.value.length === 0)
     ) {
@@ -169,19 +199,35 @@ const submitForm = async () => {
       text: '請檢查必填欄位:' + errorMessage,
       showConfirmButton: true,
     })
+    return
   }
 
-  if (isValid) {
-    // 如果表單有效，執行提交操作
-    console.log('提交的表單資料:', formData.value)
-    // 這裡可以將表單資料發送到後端
-    let formDataToSubmit = new FormData()
-    formData.value.forEach((item) => {
-      formDataToSubmit.append(item.name, item.value)
-    })
-    formDataToSubmit.append('commissionId', commissionId)
+  if (!isValid) {
+    console.log('表單驗證失敗！')
+    return
+  }
+  // 如果表單有效，執行提交操作
+  console.log('提交的表單資料:', formData.value)
+  // 這裡可以將表單資料發送到後端
+  let formDataToSubmit = new FormData()
+  formData.value.forEach((item) => {
+    formDataToSubmit.append(item.name, item.value)
+  })
+  formDataToSubmit.append('commissionId', commissionId)
+  // 🔔 顯示等待中提示
+  Swal.fire({
+    title: '表單送出中',
+    text: '請稍候，我們正在處理您的請求...',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    showConfirmButton: false,
+    didOpen: () => {
+      Swal.showLoading()
+    },
+  })
+
+  try {
     const res = await addOrderAPI(formDataToSubmit)
-    console.log(res)
     if (res.status) {
       Swal.fire({
         icon: 'success',
@@ -189,9 +235,7 @@ const submitForm = async () => {
         showConfirmButton: false,
         timer: 1500,
       }).then(() => {
-        router.push({
-          name: 'my-order',
-        })
+        router.push({ name: 'my-order' })
       })
     } else {
       Swal.fire({
@@ -200,15 +244,15 @@ const submitForm = async () => {
         text: res.message,
       })
     }
-    /* addOrderAPI(formData.value)
-      .then((response) => {
-        console.log('表單提交成功:', response)
-      })
-      .catch((error) => {
-        console.error('表單提交失敗:', error)
-      }) */
-  } else {
-    console.log('表單驗證失敗！')
+  } catch (error) {
+    console.error('Error:', error)
+    Swal.fire({
+      icon: 'error',
+      title: '送出失敗',
+      text: '請稍後再試，或聯絡管理員。',
+    })
+  } finally {
+    console.log('FormData:', formDataToSubmit)
   }
 }
 </script>
